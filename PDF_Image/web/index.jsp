@@ -4,49 +4,75 @@
     Author     : Darshan
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF to JPEG Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
+            background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
-            margin: 20px;
         }
-        form {
-            margin-bottom: 20px;
+        .container {
+            margin-top: 50px;
         }
-        .message {
-            color: green;
+        .converted-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
         }
-        .error {
-            color: red;
+        .file-location {
+            font-style: italic;
+            color: #6c757d;
+        }
+        .center {
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h2>Convert PDF to JPEG</h2>
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title text-center">PDF to JPEG Converter</h3>
+            </div>
+            <div class="card-body">
+                <form action="PDFToJPEGConverterServlet" method="post" enctype="multipart/form-data" class="mb-4">
+                    <div class="mb-3">
+                        <label for="pdfFile" class="form-label">Upload a PDF File</label>
+                        <input type="file" class="form-control" name="pdfFile" id="pdfFile" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Convert to JPEG</button>
+                </form>
 
-    <form action="PDFToJPEGConverterServlet" method="post" enctype="multipart/form-data">
-        <label for="pdfFile">Select PDF to upload:</label>
-        <input type="file" name="pdfFile" id="pdfFile" accept="application/pdf" required><br><br>
-        <button type="submit">Upload and Convert</button>
-    </form>
+                <!-- Display Conversion Message -->
+                <c:if test="${not empty message}">
+                    <div class="alert alert-info" role="alert">
+                        ${message}
+                    </div>
+                </c:if>
 
-    <div>
-        <c:if test="${not empty message}">
-            <p class="${not empty outputFiles ? 'message' : 'error'}">${message}</p>
-        </c:if>
-
-        <c:if test="${not empty outputFiles}">
-            <h3>Converted JPEG Files:</h3>
-            <ul>
-                <c:forEach var="file" items="${outputFiles}">
-                    <li><a href="${pageContext.request.contextPath}/output/${file.name}" download>${file.name}</a></li>
-                </c:forEach>
-            </ul>
-        </c:if>
+                <!-- Display Converted Images and File Location -->
+                <c:if test="${not empty outputFiles}">
+                    <div class="row">
+                        <c:forEach var="fileName" items="${outputFiles}">
+                            <div class="col-md-4 text-center">
+                                <img src="file://${user.home}/Downloads/${fileName}" class="converted-image" alt="Converted Image">
+                                <p class="file-location">Stored at: ${user.home}/Downloads/${fileName}</p>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:if>
+            </div>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
