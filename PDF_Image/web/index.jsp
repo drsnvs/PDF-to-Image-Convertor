@@ -65,9 +65,9 @@
                         <c:forEach var="fileName" items="${outputFiles}">
                             <div class="col-md-4 text-center">
                                 <img src="${pageContext.request.contextPath}/output/${fileName}" class="converted-image" alt="Converted Image">
-                                <p class="file-location">Stored at: ${pageContext.request.contextPath}/output/${fileName}</p>
                             </div>
                         </c:forEach>
+
 
                     </div>
                 </c:if>

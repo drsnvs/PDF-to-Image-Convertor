@@ -19,12 +19,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import java.nio.file.Files;
-
 @MultipartConfig
 public class PDFToJPEGConverterServlet extends HttpServlet {
     private static final String UPLOAD_DIRECTORY = "uploads"; // Folder for uploaded PDFs
-    private static final String OUTPUT_DIRECTORY = "output"; // Folder for output images
+    private static final String OUTPUT_DIRECTORY = "output";  // Folder for web-accessible output images
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,7 +41,7 @@ public class PDFToJPEGConverterServlet extends HttpServlet {
         if (!uploadsDir.exists()) uploadsDir.mkdirs();
         if (!outputDir.exists()) outputDir.mkdirs();
 
-        // Clear previous output files
+        // Clear previous output files from the output directory
         for (File file : outputDir.listFiles()) {
             file.delete();
         }
@@ -57,16 +55,27 @@ public class PDFToJPEGConverterServlet extends HttpServlet {
         // Create a timestamp for unique output filenames
         String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
+        // Get the user's Downloads directory path
+        String userHome = System.getProperty("user.home");
+        File downloadsDir = Paths.get(userHome, "Downloads").toFile();
+
         try (PDDocument document = Loader.loadPDF(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             int pageCount = document.getNumberOfPages();
 
-            // Convert each page of the PDF to JPEG and save it in the output directory
+            // Convert each page of the PDF to JPEG and save it in both locations
             for (int page = 0; page < pageCount; page++) {
                 BufferedImage image = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
                 String outputFileName = "DarshanConvertor_" + (page + 1) + "_" + timestamp + ".jpg";
-                File outputFile = new File(outputDir, outputFileName); // Save to web-accessible output directory
-                ImageIO.write(image, "JPEG", outputFile);
+                
+                // Save to the web-accessible output directory
+                File webOutputFile = new File(outputDir, outputFileName);
+                ImageIO.write(image, "JPEG", webOutputFile);
+                
+                // Save to the user's Downloads directory
+                File downloadOutputFile = new File(downloadsDir, outputFileName);
+                ImageIO.write(image, "JPEG", downloadOutputFile);
+
                 outputFileNames.add(outputFileName); // Add filename to the list
             }
 
