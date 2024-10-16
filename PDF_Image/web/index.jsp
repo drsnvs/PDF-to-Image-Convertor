@@ -58,7 +58,6 @@
                         ${message}
                     </div>
                 </c:if>
-
                 <!-- Display Converted Images and File Location -->
                 <c:if test="${not empty outputFiles}">
                     <div class="row">
