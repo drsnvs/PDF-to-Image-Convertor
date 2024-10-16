@@ -67,8 +67,6 @@
                                 <img src="${pageContext.request.contextPath}/output/${fileName}" class="converted-image" alt="Converted Image">
                             </div>
                         </c:forEach>
-
-
                     </div>
                 </c:if>
             </div>
