@@ -51,7 +51,6 @@
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Convert to JPEG</button>
                 </form>
-
                 <!-- Display Conversion Message -->
                 <c:if test="${not empty message}">
                     <div class="alert alert-info" role="alert">
